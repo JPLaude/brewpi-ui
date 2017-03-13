@@ -42,6 +42,15 @@ export function valveClicked(valveId, oldPos) {
   };
 }
 
+export function powerTogglableClicked(partId, oldPower) {
+  return {
+    type: constants.POWER_TOGGLABLE_CLICKED,
+    partId,
+    oldPower,
+  };
+}
+
+
 export function activeStepChanged(stepId) {
   return {
     type: constants.ACTIVE_STEP_CHANGED,
@@ -60,5 +69,19 @@ export function layoutChoosen(layoutId) {
   return {
     type: constants.LAYOUT_CHOSEN,
     layoutId,
+  };
+}
+
+export function gridToggled(oldValue) {
+  return {
+    type: constants.GRID_TOGGLED,
+    oldValue,
+  };
+}
+
+export function coordinatesToggled(oldValue) {
+  return {
+    type: constants.COORDINATES_TOGGLED,
+    oldValue,
   };
 }

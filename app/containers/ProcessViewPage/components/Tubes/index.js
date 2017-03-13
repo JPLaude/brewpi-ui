@@ -26,17 +26,20 @@ const SvgLiquidInletStraight = require('./svg/liquid_inlet-straight.svg?tag=g');
 const SvgTubeDip = require('./svg/tube_dip.svg?tag=g');
 const SvgTubeInletWhirlpool = require('./svg/tube_inlet-whirlpool.svg?tag=g');
 const SvgLiquidInletWhirlpool = require('./svg/liquid_inlet-whirlpool.svg?tag=g');
+const SvgFitting = require('./svg/fitting.svg?tag=g');
+const SvgLiquidFitting = require('./svg/liquid_fitting.svg?tag=g');
+
 import { SvgParent } from '../SvgParent';
-import { FlowArrows, FlowArrowsBridge, pickLiquid } from '../Flows';
+import { FlowArrows, FlowArrows2D, FlowArrowsBridge, pickLiquid } from '../Flows';
 import { Liquids } from '../Liquids';
 
 class Input extends React.Component {
-  static flows = () => ({ s: 'r' }); // source on the right edge
+  static flows = () => ({ s: 'r+99' }); // source on the right edge
 
   render() {
     return (
       <SvgParent>
-        <SvgLiquidInput className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Input.flows()))} />
+        <SvgLiquidInput className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeInput className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -52,7 +55,7 @@ class Output extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidOutput className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Output.flows()))} />
+        <SvgLiquidOutput className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeOutput className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -70,7 +73,7 @@ class Straight extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidStraight className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Straight.flows()))} />
+        <SvgLiquidStraight className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeStraight className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -87,7 +90,7 @@ class Elbow extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidElbow className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Elbow.flows()))} />
+        <SvgLiquidElbow className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeElbow className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -103,7 +106,7 @@ class Tee extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidTee className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Tee.flows()))} />
+        <SvgLiquidTee className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeTee className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -119,7 +122,7 @@ class Cross extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidCross className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Cross.flows()))} />
+        <SvgLiquidCross className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeCross className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -135,7 +138,7 @@ class Bridge extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidBridge className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Bridge.flows()))} />
+        <SvgLiquidBridge className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeBridge className={styles.tube} />
         <FlowArrowsBridge flows={this.props.flows} />
       </SvgParent>
@@ -151,7 +154,7 @@ class Inlet extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidInlet className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Inlet.flows()))} />
+        <SvgLiquidInlet className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeInlet className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -167,9 +170,9 @@ class InletStraight extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidInletStraight className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, InletStraight.flows()))} />
+        <SvgLiquidInletStraight className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeInletStraight className={styles.tube} />
-        <FlowArrows flow={this.props.flows} />
+        <FlowArrows flows={this.props.flows} />
       </SvgParent>
     );
   }
@@ -184,7 +187,7 @@ class Dip extends React.Component {
   render() {
     return (
       <SvgParent>
-        <SvgLiquidDip className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, Dip.flows()))} />
+        <SvgLiquidDip className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
         <SvgTubeDip className={styles.tube} />
         <FlowArrows flows={this.props.flows} />
       </SvgParent>
@@ -196,18 +199,36 @@ Dip.propTypes = {
 };
 
 class InletWhirlpool extends React.Component {
-  static flows = () => ({ l: 'k' });
+  static flows = () => ([[{ l: 'b' }], [{ t: 'b' }], [{ t: 'b' }], [{ t: 'k' }]]);
   render() {
     return (
       <SvgParent viewBox={'0 0 50 200'}>
-        <SvgLiquidInletWhirlpool className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, InletWhirlpool.flows()))} />
+        <SvgLiquidInletWhirlpool className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows, 0, 0))} />
         <SvgTubeInletWhirlpool className={styles.tube} />
-        <FlowArrows flows={this.props.flows} />
+        <FlowArrows2D flows={this.props.flows} />
       </SvgParent>
     );
   }
 }
 InletWhirlpool.propTypes = {
+  flows: React.PropTypes.array,
+};
+
+class Fitting extends React.Component {
+  static flows = (data) => {
+    const input = data.getIn(['settings', 'dir']) === 'in';
+    return (input) ? { l: 'k' } : { k: 'l' }; // only input when explicitly set as input
+  }
+  render() {
+    return (
+      <SvgParent viewBox={'0 0 50 50'}>
+        <SvgLiquidFitting className={styles.liquid} style={Liquids.strokeStyle(pickLiquid(this.props.flows))} />
+        <SvgFitting className={styles.tube} />
+      </SvgParent>
+    );
+  }
+}
+Fitting.propTypes = {
   flows: React.PropTypes.array,
 };
 
@@ -223,4 +244,5 @@ export const Tubes = {
   Inlet,
   InletStraight,
   InletWhirlpool,
+  Fitting,
 };

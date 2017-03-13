@@ -29,11 +29,11 @@ const viewNameSelector = createSelector(
 
 
 /**
- * Get the active layout id
+ * Get the default layout id
  */
-const activeLayoutIdSelector = createSelector(
+const defaultLayoutIdSelector = createSelector(
   processViewSelector,
-  (view) => view.get('currentLayoutId')
+  (view) => view.get('defaultLayoutId') || 0
 );
 
 /**
@@ -42,6 +42,92 @@ const activeLayoutIdSelector = createSelector(
 const showCoordinatesSelector = createSelector(
   processViewSelector,
   (view) => view.get('showCoordinates')
+);
+
+/**
+ * Get showGrid setting for the view
+ */
+const showGridSelector = createSelector(
+  processViewSelector,
+  (view) => view.get('showGrid')
+);
+
+/*
+ * Get a list of steps (id and name) sorted by id
+ */
+const stepsSelector = createSelector(
+  processViewSelector,
+  (view) => {
+    const steps = view.get('steps');
+    if (typeof steps !== 'undefined') {
+      const sortedSteps = steps.sortBy((step) => step.get('id'));
+      return sortedSteps;
+    }
+    return new List();
+  }
+);
+
+/*
+ * Get active step id. Return undefined when the step does not exist.
+ */
+
+const activeStepIdSelector = createSelector(
+  processViewSelector,
+  stepsSelector,
+  (view, steps) => {
+    const id = view.get('activeStepId');
+    const match = steps.find((obj) => obj.get('id') === id);
+    return (typeof match !== 'undefined') ? id : undefined;
+  }
+);
+
+/*
+ * Get data for the currently active step.
+ */
+
+const activeStepSelector = createSelector(
+  activeStepIdSelector,
+  stepsSelector,
+  (stepId, steps) => {
+    const match = steps.find((obj) => obj.get('id') === stepId);
+    return (typeof match !== 'undefined') ? match : undefined;
+  }
+);
+
+/*
+ * Get notes for the currently active step.
+ */
+
+const activeStepNotesSelector = createSelector(
+  activeStepSelector,
+  (step) => {
+    const notes = (typeof step !== 'undefined') ? step.get('notes') : new List();
+    return new List(notes); // ensure returned type is list
+  }
+);
+
+
+/*
+ * Get step settings for he active step id
+ */
+const activeStepSettingsSelector = createSelector(
+  activeStepSelector,
+  (step) => {
+    const settings = (typeof step !== 'undefined') ? step.get('settings') : undefined;
+    return settings || new List();// return settings that it contains or empty list when not found
+  }
+);
+
+/*
+ * Get step layout for he active step id
+ */
+const activeLayoutIdSelector = createSelector(
+  defaultLayoutIdSelector,
+  activeStepSelector,
+  (defaultLayoutId, step) => {
+    const layoutId = (typeof step !== 'undefined') ? step.get('layout') : undefined;
+    return layoutId || defaultLayoutId;// return settings that it contains or empty list when not found
+  }
 );
 
 /**
@@ -156,7 +242,7 @@ const layoutTableSelector = createSelector(
 /**
  * get a table of possible flows for each tile.
  */
-const flowTableSelector = createSelector(
+const possibleFlowTableSelector = createSelector(
   layoutTableSelector,
   (layoutTable) => {
     const width = layoutTable.width;
@@ -240,7 +326,7 @@ const getNeighbour = (x, y, edge, width, height) => {
     default:
       returnVal = false;
   }
-  if (returnVal.x < 0 || returnVal.x >= width || returnVal.y < 0 || returnVal.y > height) {
+  if (returnVal.x < 0 || returnVal.x >= width || returnVal.y < 0 || returnVal.y >= height) {
     return false;
   }
   return returnVal;
@@ -250,8 +336,8 @@ const getNeighbour = (x, y, edge, width, height) => {
  * get a table of actual flows for each tile by recursively following possible flows,
  * starting at each source, ending in a sink.
  */
-const actualFlowTableSelector = createSelector(
-  flowTableSelector,
+const flowTableSelector = createSelector(
+  possibleFlowTableSelector,
   (possibleFlowTable) => {
     const width = possibleFlowTable.width;
     const height = possibleFlowTable.height;
@@ -260,7 +346,12 @@ const actualFlowTableSelector = createSelector(
       for (let y = 0; y < height; y += 1) {
         const tileFlow = possibleFlowTable.getCell(x, y);
         if (tileFlow !== undefined && tileFlow.s !== undefined && tileFlow.liquid !== undefined) { // this tile is a source, start an expanding flow path from here
-          actualFlowTable = expandFlow(x, y, 's', tileFlow.liquid, possibleFlowTable, actualFlowTable);
+          let pressure = 0;
+          if (tileFlow.pressure) {
+            pressure = tileFlow.presure;
+          }
+          const expanded = expandFlow(x, y, 's', tileFlow.liquid, pressure, possibleFlowTable, actualFlowTable);
+          actualFlowTable = expanded.flow;
         }
       }
     }
@@ -268,86 +359,98 @@ const actualFlowTableSelector = createSelector(
   }
 );
 
-const expandFlow = (x, y, inEdge, liquid, possibleFlowTable, actualFlowTable) => {
+function extractPressureDiff(edgesAndPressure) {
+  const outEdgesMinusReplaced = edgesAndPressure.replace('-', '+-');
+  const split = outEdgesMinusReplaced.split('+');
+  const edges = split[0];
+  let pressureDiff = 0;
+  if (split.length > 1) {
+    pressureDiff = parseInt(split[1], 10);
+  }
+  return { edges, pressureDiff };
+}
+
+
+const expandFlow = (x, y, inEdge, liquid, pressure, possibleFlowTable, actualFlowTable) => {
   const possibleFlow = possibleFlowTable.getCell(x, y) || {};
-  const outEdges = possibleFlow[inEdge];
-  if (typeof outEdges === 'undefined') {
-    return actualFlowTable; // no flow possible, leave actual flow table unchanged
+  const outEdgesString = possibleFlow[inEdge];
+  if (typeof outEdgesString === 'undefined') {
+    return { flow: actualFlowTable, flowing: false }; // no flow possible, leave actual flow table unchanged
   }
   // check for conflicts (existing outflows match this inflow)
   // this prevents loops
   let conflict = '';
+  let loop = '';
   const currentCell = actualFlowTable.getCell(x, y);
   if (typeof currentCell !== 'undefined') {
     for (const existingFlow of currentCell) {
+      const existingLiquid = existingFlow.liquid;
       for (const [existingInEdge, exitingOutEdges] of Object.entries(existingFlow.dir)) {
         if (existingInEdge === inEdge && inEdge !== 'k') { // kettle flow is an exception
           conflict += inEdge;
         }
         for (const outEdge of exitingOutEdges) {
           if (outEdge === inEdge && inEdge !== 'k') {
-            conflict += outEdge;
+            if (existingLiquid === liquid) {
+              loop += inEdge;
+            } else {
+              conflict += inEdge;
+            }
           }
         }
       }
     }
   }
+  let newActualFlowTable = actualFlowTable;
+  let flowing = false;
+  let flowingOutEdges = '';
+  const extracted = extractPressureDiff(outEdgesString);
+  const outEdges = extracted.edges;
+  const pressureDiff = extracted.pressureDiff;
   const newCell = { dir: {}, liquid: {} };
   newCell.dir[inEdge] = outEdges;
   newCell.liquid = liquid;
-  let newActualFlowTable = pushToCell(x, y, actualFlowTable, newCell);
-  if (!conflict) { // only continue recursion when there are no conflicts
+  if (conflict) {
+    console.warn(`Conflict in tile [${x}, ${y}] on edge(s) ${conflict}!`); // eslint-disable-line no-console
+  } else if (loop) {
+    if (inEdge !== 'k') {
+      console.warn(`Loop in tile [${x}, ${y}] on edge(s) ${loop}!`); // eslint-disable-line no-console
+    }
+  } else { // only continue recursion when there are no conflicts or loops
+    newActualFlowTable = pushToCell(x, y, newActualFlowTable, newCell);
     for (const edge of outEdges) {
       const neighbour = getNeighbour(x, y, edge, possibleFlowTable.width, possibleFlowTable.height);
+      let flowingToNeighbour = false;
       if (neighbour) {
-        newActualFlowTable = expandFlow(neighbour.x, neighbour.y, neighbour.edge, liquid, possibleFlowTable, newActualFlowTable);
+        const newPressure = pressure + (neighbour.y - y) + pressureDiff;
+        if (newPressure >= 0) {
+          const expanded = expandFlow(neighbour.x, neighbour.y, neighbour.edge, liquid, newPressure, possibleFlowTable, newActualFlowTable);
+          newActualFlowTable = expanded.flow;
+          flowingToNeighbour = expanded.flowing;
+        }
       }
+      const isSink = edge === 's';
+      const flowOnThisEdge = flowingToNeighbour || isSink;
+      flowing = flowing || flowOnThisEdge;
+      flowingOutEdges = (flowOnThisEdge) ? flowingOutEdges + edge : flowingOutEdges;
     }
   }
-  return newActualFlowTable;
+  if (flowing) {
+    // update cell with what is actually flowing
+    let cell = newActualFlowTable.getCell(x, y);
+    const index = cell.findIndex((f) => f.dir === newCell.dir);
+    if (index >= 0) {
+      cell = cell.update(index, (f) => {
+        const f2 = f;
+        f2.flowing = inEdge + flowingOutEdges.toUpperCase();
+        return f2;
+      });
+      newActualFlowTable = newActualFlowTable.setCell(x, y, cell);
+    }
+  }
+  return { flow: newActualFlowTable, flowing };
 };
 
-/*
- * Get a list of steps (id and name) sorted by id
- */
-const stepsSelector = createSelector(
-  processViewSelector,
-  (view) => {
-    const steps = view.get('steps');
-    if (typeof steps !== 'undefined') {
-      const sortedSteps = steps.sortBy((step) => step.get('id'));
-      return sortedSteps;
-    }
-    return new List();
-  }
-);
-
-/*
- * Get active step id. Return undefined when the step does not exist.
- */
-
-const activeStepIdSelector = createSelector(
-  processViewSelector,
-  stepsSelector,
-  (view, steps) => {
-    const id = view.get('activeStepId');
-    const match = steps.find((obj) => obj.get('id') === id);
-    return (typeof match !== 'undefined') ? id : undefined;
-  }
-);
-
-/*
- * Get step settings for he active step id
- */
-const activeStepSettingsSelector = createSelector(
-  stepsSelector,
-  activeStepIdSelector,
-  (steps, id) => {
-    const step = steps.find((obj) => obj.get('id') === id); // find first step with matching id
-    const settings = (typeof step !== 'undefined') ? step.get('settings') : undefined;
-    return settings || new List();// return settings that it contains or empty list when not found
-  }
-);
 
 export {
   processViewSelector,
@@ -357,11 +460,13 @@ export {
   layoutPartsSelector,
   partSettingsSelector,
   showCoordinatesSelector,
+  showGridSelector,
   dimensionsSelector,
   layoutTableSelector,
+  possibleFlowTableSelector,
   flowTableSelector,
-  actualFlowTableSelector,
   stepsSelector,
   activeStepIdSelector,
   activeStepSettingsSelector,
+  activeStepNotesSelector,
 };

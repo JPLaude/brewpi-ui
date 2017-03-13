@@ -10,11 +10,13 @@ import { Valves } from '../Valves';
 import { Tubes } from '../Tubes';
 import { Kettle } from '../Kettle';
 import { Coil } from '../Coil';
+import { CoilImmersion } from '../CoilImmersion';
 import { HeatingElement } from '../HeatingElement';
 import { Lauterhexe } from '../Lauterhexe';
-import { Pump } from '../Pump';
-import { SubmersiblePump } from '../SubmersiblePump';
-import { BlowerFan } from '../BlowerFan';
+import Pump from '../Pump';
+import PumpSubmersible from '../PumpSubmersible';
+import BlowerFan from '../BlowerFan';
+import Burner from '../Burner';
 import { Cfc } from '../Cfc';
 import { TempSensors } from '../TempSensors';
 import { BeerBottle } from '../BeerBottle';
@@ -25,6 +27,8 @@ import { GlycolReservoir } from '../GlycolReservoir';
 import { Keg } from '../Keg';
 import { TubularHeater } from '../TubularHeater';
 import { SetPoint } from '../SetPoint';
+import { FilterBottom } from '../FilterBottom';
+import { BiabFilter } from '../BiabFilter';
 import { Map } from 'immutable';
 import { Table } from 'immutable-table';
 
@@ -38,20 +42,24 @@ const componentTable = {
   TUBE_TEE: Tubes.Tee,
   TUBE_CROSS: Tubes.Cross,
   TUBE_BRIDGE: Tubes.Bridge,
+  TUBE_INLET_STRAIGHT: Tubes.InletStraight,
   TUBE_INLET: Tubes.Inlet,
   TUBE_WHIRLPOOL: Tubes.InletWhirlpool,
   TUBE_INPUT: Tubes.Input,
   TUBE_OUTPUT: Tubes.Output,
   TUBE_DIP: Tubes.Dip,
+  FITTING: Tubes.Fitting,
   VALVE_MOTOR: Valves.Motor,
   VALVE_MANUAL: Valves.Manual,
+  VALVE_MANUAL_TEE: Valves.ManualTee,
   VALVE_CHECK: Valves.Check,
   KETTLE: Kettle,
   COIL: Coil,
+  COIL_IMMERSION: CoilImmersion,
   HEATING_ELEMENT: HeatingElement,
   LAUTERHEXE: Lauterhexe,
   PUMP: Pump,
-  SUBMERSIBLE_PUMP: SubmersiblePump,
+  SUBMERSIBLE_PUMP: PumpSubmersible,
   CFC: Cfc,
   TEMP_SENSOR_INLINE: TempSensors.Inline,
   BEER_BOTTLE: BeerBottle,
@@ -59,12 +67,15 @@ const componentTable = {
   FRIDGE_TALL: FridgeTall,
   FRIDGE_FAN: FridgeFan,
   BLOWER_FAN: BlowerFan,
+  Burner: Burner,
   FRIDGE_SHELF: FridgeShelf,
   GLYCOL_RESERVOIR: GlycolReservoir,
   CORNEY_KEG: Keg,
   TUBULAR_HEATER: TubularHeater,
   CARBOY: Carboy,
   SETPOINT: SetPoint,
+  FILTER_BOTTOM: FilterBottom,
+  BIAB_FILTER: BiabFilter,
   DEFAULT: NoPart,
 };
 
@@ -93,7 +104,7 @@ const rotateClassNames = {
  */
 const rotateString = (oldString, angle) => {
   let newString = '';
-  const lookup = { l: 't', t: 'r', r: 'b', b: 'l' };
+  const lookup = { l: 't', t: 'r', r: 'b', b: 'l', L: 'T', T: 'R', R: 'B', B: 'L' };
   for (const ch of oldString) {
     let newCh = ch;
     let angleRemaining = angle;
@@ -196,7 +207,7 @@ export class Part extends React.Component {
         width = flows.length;
       }
     }
-    return [width, height];
+    return { width, height };
   }
 
   type() {
@@ -233,37 +244,57 @@ export class Part extends React.Component {
       options = options.toJS();
     }
 
-    // flows are in an immutable table. We want to get them back to normal JS objects
-    let flows = this.props.flows;
-    const width = flows.width;
-    const height = flows.height;
-    if (flows) {
-      const partFlows = [];
-      for (let y = 0; y < height; y += 1) {
-        const row = [];
-        for (let x = 0; x < width; x += 1) {
-          const flowTile = flows.getCell(x, y);
-          // to pass them to the part we convert them to a normal mutable object by reading the cells
-          const flowsInTile = [];
-          if (flowTile !== undefined) {
-            for (const flow of flowTile) {
-              if (flow.dir !== 'undefined') {
-                // We rotate each flow in the tile back to normal orientation
-                flowsInTile.push({ dir: rotateFlows(flow.dir, 360 - rotate), liquid: flow.liquid });
+    let flows = this.props.flows; // tile flows
+    let partAcceptsFlows = Part.acceptsFlows(data); // possible flows due to this part
+    if (partAcceptsFlows) {
+      // make sure partAcceptFlows is a twodimensional Array
+      if (partAcceptsFlows.constructor === Array) {
+        if (partAcceptsFlows[0].constructor !== Array) {
+          partAcceptsFlows = [partAcceptsFlows];
+        }
+      } else {
+        partAcceptsFlows = [[partAcceptsFlows]];
+      }
+      // flows are in an immutable table. We want to get them back to normal JS objects
+      const width = flows.width;
+      const height = flows.height;
+      if (flows) {
+        const partFlows = [];
+        for (let y = 0; y < height; y += 1) {
+          const row = [];
+          for (let x = 0; x < width; x += 1) {
+            const flowTile = flows.getCell(x, y);
+            // to pass them to the part we convert them to a normal mutable object by reading the cells
+            const flowsInTile = [];
+            if (flowTile !== undefined) {
+              for (const flow of flowTile) {
+                if (flow.dir !== 'undefined') {
+                  // check that the flow in the tile comes from this part
+                  const flowOrigin = Object.keys(flow.dir)[0];
+                  const partFlowsInTile = partAcceptsFlows[y][x];
+                  if (partFlowsInTile && Object.prototype.hasOwnProperty.call(partFlowsInTile, flowOrigin)) {
+                    // We rotate each flow in the tile back to normal orientation for rendering
+                    const dir = rotateFlows(flow.dir, 360 - rotate);
+                    const flowing = (flow.flowing) ? rotateString(flow.flowing, 360 - rotate) : '';
+                    flowsInTile.push({ dir, liquid: flow.liquid, flowing });
+                  }
+                }
               }
             }
+            row.push(flowsInTile);
           }
-          row.push(flowsInTile);
+          partFlows.push(row);
         }
-        partFlows.push(row);
+        if (width === 1 && height === 1) {
+          // unpack unnecessary 1x1 tables, because 1x1 parts do not expect an Array[][][], but an Array[] of flows
+          flows = partFlows[0][0];
+        } else {
+          // Then we rotate the entire table back to normal orientation
+          flows = rotateArray(partFlows, rotate);
+        }
       }
-      if (width === 1 && height === 1) {
-        // unpack unnecessary 1x1 tables, because 1x1 parts do not expect an Array[][][], but an Array[] of flows
-        flows = partFlows[0][0];
-      } else {
-        // Then we rotate the entire table back to normal orientation
-        flows = rotateArray(partFlows, rotate);
-      }
+    } else {
+      flows = {};
     }
     const renderedComponent = React.createElement(Part.component(data), { id, settings, options, flows, flip, rotate });
     return (
