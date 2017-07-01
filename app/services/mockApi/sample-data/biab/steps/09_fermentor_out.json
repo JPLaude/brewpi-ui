@@ -1,0 +1,81 @@
+{
+  "id": 9,
+  "name": "Fermentor Out",
+  "layout": 6,
+  "settings": [
+      {
+      "id": "temp",
+      "settings": {
+        "val": 20
+      }
+    },
+    {
+      "id": "water",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "CoolWater",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "kettle",
+      "settings": {
+        "volume": 10,
+        "liquid": "wort"
+      }
+    },    
+    {
+      "id": "filter",
+      "settings": {
+        "grain": 0
+      }
+    },
+    {
+      "id": "in",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "v1",
+      "settings": {
+        "pos": "opened"
+      }
+    },
+    {
+      "id": "v2",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "v3",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "out",
+      "settings": {
+        "pos": "opened"
+      }
+    },
+    {
+      "id": "heater",
+      "settings": {
+        "duty": 0
+      }
+    },
+    {
+      "id": "pump",
+      "settings": {
+         "power": false,
+         "speed": 50  
+      }  
+    }
+  ]
+}

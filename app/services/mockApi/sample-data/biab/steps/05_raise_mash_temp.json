@@ -1,0 +1,71 @@
+{
+  "id": 5,
+  "name": "Raise to mash out temperature",
+  "layout": 2,
+  "settings": [
+    {
+      "id": "temp",
+      "settings": {
+        "val": 67,
+        "set": 73
+      }
+    },
+    {
+      "id": "water",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "kettle",
+      "settings": {
+        "volume": 20.0,
+        "liquid": "wort"
+      }
+    },    
+    {
+      "id": "bag",
+      "settings": {
+        "grain": 10
+      }
+    },
+    {
+      "id": "in",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "heater",
+      "settings": {
+        "duty": 100
+      }
+    },
+    {
+      "id": "v1",
+      "settings": {
+        "pos": "opened",
+        "liquid": "wort"
+      }
+    },
+    {
+      "id": "v2",
+      "settings": {
+        "pos": "opened"
+      }
+    },
+    {
+      "id": "pump",
+      "settings": {
+         "power": true,
+         "speed": 50  
+      }  
+    },
+    {
+      "id": "out",
+      "settings": {
+        "pos": "closed"
+      }
+    }
+  ]
+}

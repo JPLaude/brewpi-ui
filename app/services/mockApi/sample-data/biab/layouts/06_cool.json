@@ -1,0 +1,222 @@
+{
+  "id": 6,
+  "name": "Cool",
+  "parts": [
+    {
+      "part": {
+        "type": "SETPOINT",
+        "id": "temp"
+      },
+      "x": 9,
+      "y": 0
+    },
+    {
+      "part": {
+        "rotate": 0,
+        "type": "TUBE_STRAIGHT"
+      },
+      "x": [1, 2],
+      "y": 2
+    },
+    {
+      "part": {
+        "rotate": 180,
+        "type": "TUBE_ELBOW"
+      },
+      "x": [
+        3        
+      ],
+      "y": 2
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_INLET_STRAIGHT"
+      },
+      "x": 3,
+      "y": 3
+    },
+    {
+      "part": {
+        "type": "KETTLE",
+        "options": {
+          "height": 6,
+          "volume": 30,
+          "width": 4
+        },
+        "id": "kettle"
+      },
+      "x": 3,
+      "y": 3
+    },
+    {
+      "part": {
+        "type": "HEATING_ELEMENT",
+        "id": "heater",
+        "flip": true
+      },
+      "x": 3,
+      "y": 8
+    },
+    {
+      "part": {
+        "flip": 0,
+        "type": "FILTER_BOTTOM"
+      },
+      "x": 3,
+      "y": 8
+    },
+    {
+      "part": {
+        "rotate": 0,
+        "type": "VALVE_MOTOR",
+        "id": "v1"
+      },
+      "x": 2,
+      "y": 8
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_TEE"
+      },
+      "x": 0,
+      "y": 8
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_STRAIGHT"
+      },
+      "x": 0,
+      "y": [
+        7,
+        6,
+        5,
+        4,
+        3
+      ]
+    },
+    {
+      "part": {
+        "rotate": 180,
+        "type": "PUMP",
+        "id": "pump"
+      },
+      "x": 1,
+      "y": 8
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_ELBOW"
+      },
+      "x": 0,
+      "y": 2
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "VALVE_MANUAL",
+        "id": "out"
+      },
+      "x": 0,
+      "y": 9
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_OUTPUT",
+        "id": "fermenter"
+      },
+      "x": 0,
+      "y": 10
+    },
+
+    {
+      "part": {
+        "type": "COIL_IMMERSION"
+      },
+      "x": 4,
+      "y": 6
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_INLET_STRAIGHT"
+      },
+      "x": 4,
+      "y": 3
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_INLET_STRAIGHT"
+      },
+      "x": 5,
+      "y": 3
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_STRAIGHT"
+      },
+      "x": 4,
+      "y": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_STRAIGHT"
+      },
+      "x": 5,
+      "y": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_ELBOW",
+        "id": "Waste"
+      },
+      "x": 5,
+      "y": 1   
+    },
+    {
+      "part": {
+        "rotate": 0,
+        "type": "TUBE_OUTPUT",
+        "id": "Waste"
+      },
+      "x": 6,
+      "y": 1   
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "VALVE_MOTOR",
+        "id": "v3"
+      },
+      "x": 4,
+      "y": 1   
+    },
+    {
+      "part": {
+        "rotate": 90,
+        "type": "TUBE_INPUT",
+        "id": "CoolWater"
+      },
+      "x": 4,
+      "y": 0   
+    }
+  ]
+}

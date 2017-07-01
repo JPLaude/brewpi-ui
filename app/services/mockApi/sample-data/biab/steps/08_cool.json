@@ -1,0 +1,83 @@
+{
+  "id": 8,
+  "name": "Cool",
+  "layout": 6,
+  "settings": [
+     {
+      "id": "temp",
+      "settings": {
+        "val": 100,
+        "set": 20
+      }
+    },
+       {
+      "id": "kettle",
+      "settings": {
+        "volume": 20.0,
+        "liquid": "wort"
+      }
+    },    
+    {
+      "id": "bag",
+      "settings": {
+        "grain": 10
+      }
+    },
+    {
+      "id": "in",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "heater",
+      "settings": {
+        "duty": 0
+      }
+    },
+    {
+      "id": "v1",
+      "settings": {
+        "pos": "closed",
+        "liquid": "wort"
+      }
+    },
+    {
+      "id": "v2",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "v3",
+      "settings": {
+        "pos": "opened"
+      }
+    },
+    {
+      "id": "CoolWater",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "water",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "pump",
+      "settings": {
+         "power": false,
+         "speed": 50  
+      }  
+    },
+    {
+      "id": "out",
+      "settings": {
+        "pos": "closed"
+      }
+    }
+  ]
+}

@@ -5,12 +5,14 @@ import hermsManualValves from './sample-data/herms-manual-valves';
 import hermsHoseSwap from './sample-data/herms-hose-swap';
 import fermentation from './sample-data/fermentation';
 import rimsBiab from './sample-data/rims-biab';
+import Biab from './sample-data/biab';
 
 let views = {
   'herms-automated-valves': hermsAutomatedValves,
   'herms-manual-valves': hermsManualValves,
   'herms-hose-swap': hermsHoseSwap,
   'rims-biab': rimsBiab,
+  biab: Biab,
   fermentation,
   view1: require('./sample-data/test_data/view1.json'),
   view2: require('./sample-data/test_data/view2.json'),

@@ -1,0 +1,71 @@
+{
+  "id": 6,
+  "name": "Remove bag",
+  "layout": 3,
+  "settings": [
+              {
+      "id": "temp",
+      "settings": {
+        "val": 73,
+        "set": 73
+      }
+    },
+    {
+      "id": "water",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "kettle",
+      "settings": {
+        "volume": 20.0,
+        "liquid": "wort"
+      }
+    },    
+     {
+      "id": "bag",
+      "settings": {
+        "grain": 10
+      }
+    },
+    {
+      "id": "in",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "heater",
+      "settings": {
+        "duty": 0
+      }
+    },
+    {
+      "id": "v1",
+      "settings": {
+        "pos": "closed",
+        "liquid": "wort"
+      }
+    },
+    {
+      "id": "v2",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "pump",
+      "settings": {
+         "power": false,
+         "speed": 50  
+      }  
+    },
+    {
+      "id": "out",
+      "settings": {
+        "pos": "closed"
+      }
+    }
+  ]
+}

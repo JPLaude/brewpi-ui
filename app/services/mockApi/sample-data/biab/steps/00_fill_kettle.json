@@ -1,0 +1,56 @@
+{
+  "id": 0,
+  "name": "Fill kettle",
+  "layout": 0,
+  "settings": [
+      {
+      "id": "temp",
+      "settings": {
+        "val": 15
+      }
+    },
+     {
+      "id": "water",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "kettle",
+      "settings": {
+        "volume": 10,
+        "liquid": "water"
+      }
+    },    
+    {
+      "id": "filter",
+      "settings": {
+        "grain": 0
+      }
+    },
+    {
+      "id": "in",
+      "settings": {
+        "pos": "opened"
+      }
+    },
+    {
+      "id": "v1",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "v2",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "out",
+      "settings": {
+        "pos": "closed"
+      }
+    }
+  ]
+}

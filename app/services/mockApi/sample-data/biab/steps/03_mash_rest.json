@@ -1,0 +1,63 @@
+{
+  "id": 3,
+  "name": "Mash rest 10 mins",
+  "layout": 2,
+  "settings": [
+              {
+      "id": "temp",
+      "settings": {
+        "val": 67,
+        "set": 67
+      }
+    },
+    {
+      "id": "water",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "kettle",
+      "settings": {
+        "volume": 20.0,
+        "liquid": "wort"
+      }
+    },    
+   {
+      "id": "bag",
+      "settings": {
+        "grain": 10
+      }
+    },
+    {
+      "id": "in",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "heater",
+      "settings": {
+        "duty": 10
+      }
+    },
+    {
+      "id": "v1",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "v2",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "out",
+      "settings": {
+        "pos": "closed"
+      }
+    }
+  ]
+}

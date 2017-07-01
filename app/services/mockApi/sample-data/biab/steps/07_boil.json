@@ -1,0 +1,77 @@
+{
+  "id": 7,
+  "name": "Boil",
+  "layout": 6,
+  "settings": [
+    {
+      "id": "temp",
+      "settings": {
+        "val": 73,
+        "set": 100
+      }
+    },
+    {
+      "id": "water",
+      "settings": {
+        "liquid": "water"
+      }
+    },
+    {
+      "id": "kettle",
+      "settings": {
+        "volume": 20.0,
+        "liquid": "wort"
+      }
+    },    
+    {
+      "id": "bag",
+      "settings": {
+        "grain": 10
+      }
+    },
+    {
+      "id": "in",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "heater",
+      "settings": {
+        "duty": 100
+      }
+    },
+    {
+      "id": "v1",
+      "settings": {
+        "pos": "opened",
+        "liquid": "wort"
+      }
+    },
+    {
+      "id": "v2",
+      "settings": {
+        "pos": "opened"
+      }
+    },
+    {
+      "id": "v3",
+      "settings": {
+        "pos": "closed"
+      }
+    },
+    {
+      "id": "pump",
+      "settings": {
+         "power": true,
+         "speed": 50  
+      }  
+    },
+    {
+      "id": "out",
+      "settings": {
+        "pos": "closed"
+      }
+    }
+  ]
+}
